@@ -19,6 +19,7 @@ from hospital.dialogWindows.Historias_Clinicas.crear_historia_clinica import Cre
 from hospital.dialogWindows.Historias_Clinicas.consultar_historia_clinica import ConsultarHistoriaClinica
 from hospital.dialogWindows.consulta_general import ConsultarPacientesHistoria
 from hospital.dialogWindows.Doctores.tabla_doctores import TablaDoctores
+from hospital.dialogWindows.Doctores.cambiar_password import CambiarContraseña
 
 class MainWindow(QMainWindow):
     def __init__(self, doctor_id, nombre, apellido, es_admin):
@@ -89,6 +90,9 @@ class MainWindow(QMainWindow):
         spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         right_layout.addItem(spacer)
 
+        #modificar la contraseña de cualquier doctor ----------------------------
+        self.add_button(right_layout, "Cambiar Contraseña", self.open_change_password)
+
         # Botón para gestionar doctores (solo para administradores) --------------
         self.manage_doctors_button = self.add_button(right_layout, "Gestionar Doctores", self.open_manage_doctors)
         self.manage_doctors_button.setEnabled(self.es_admin)
@@ -138,6 +142,10 @@ class MainWindow(QMainWindow):
                 QMessageBox.information(self, "Eliminación exitosa", "Todos los pacientes han sido eliminados correctamente")
             else:
                 QMessageBox.warning(self, "Error", "No se pudieron eliminar los pacientes")
+    
+    def open_change_password(self):
+        dialog = CambiarContraseña(self.doctor_id)
+        dialog.exec()
 
     def open_consult_clinical_history(self):
         selected = self.table_view.selectionModel().selectedRows() #lista de elementos seleccionados
