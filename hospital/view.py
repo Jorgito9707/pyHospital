@@ -86,12 +86,12 @@ class MainWindow(QMainWindow):
         self.consult_history_button = self.add_button(right_layout, "Historia Clínica", self.open_consult_clinical_history)
         self.add_button(right_layout, "Consulta General", self.open_general_consultation)
 
+        #modificar la contraseña de cualquier doctor ----------------------------
+        self.add_button(right_layout, "Cambiar Contraseña", self.open_change_password)
+
         # Agregar un spacer para empujar los botones hacia arriba
         spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         right_layout.addItem(spacer)
-
-        #modificar la contraseña de cualquier doctor ----------------------------
-        self.add_button(right_layout, "Cambiar Contraseña", self.open_change_password)
 
         # Botón para gestionar doctores (solo para administradores) --------------
         self.manage_doctors_button = self.add_button(right_layout, "Gestionar Doctores", self.open_manage_doctors)
