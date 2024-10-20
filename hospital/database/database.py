@@ -47,7 +47,7 @@ def crear_tablas():
             password TEXT NOT NULL,
             telefono TEXT,
             email TEXT,
-            administrador BOOLEAN
+            administrador BOOLEAN NOT NULL DEFAULT False
         )
     """):
         QMessageBox.critical(None, "Error", f"Error al crear la tabla DOCTORES: {query.lastError().text()}")
