@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QTableView, QPush
 from PyQt6.QtSql import QSqlTableModel, QSqlQuery
 from PyQt6.QtCore import Qt
 from hospital.dialogWindows.Doctores.agregar_doctores import AgregarDoctores
+from hospital.model.model import MyModel
 
 class TablaDoctores(QDialog):
     """
@@ -18,7 +19,7 @@ class TablaDoctores(QDialog):
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
         
-        self.model = QSqlTableModel()
+        self.model = MyModel()
         self.model.setTable("DOCTORES")
         self.model.setEditStrategy(QSqlTableModel.EditStrategy.OnFieldChange)
         
@@ -37,6 +38,16 @@ class TablaDoctores(QDialog):
         self.tabla_doctores.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.tabla_doctores.setSelectionMode(QTableView.SelectionMode.SingleSelection)
         self.main_layout.addWidget(self.tabla_doctores)
+
+        #expandir columnas para llenar espacio disponible de la tabla -------------------------
+        self.tabla_doctores.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
+        # habilitar edicion de la tabla por doble click o presionar la tecla enter ----------
+        self.tabla_doctores.setEditTriggers(QTableView.EditTrigger.DoubleClicked | QTableView.EditTrigger.EditKeyPressed)
+
+        #establecer comportamiento al seleccionar elementos ---------------------------------
+        self.tabla_doctores.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
+        self.tabla_doctores.setSelectionMode(QTableView.SelectionMode.SingleSelection)
         
         # Botones
         button_layout = QHBoxLayout()
@@ -73,7 +84,7 @@ class TablaDoctores(QDialog):
             "password": "Contraseña",
             "telefono": "Teléfono",
             "email": "Correo Electrónico",
-            "administrador": "Privilegio Administrador"
+            "administrador": "Administrador"
         }
 
         for column, name in column_names.items():
