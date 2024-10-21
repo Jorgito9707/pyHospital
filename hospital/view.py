@@ -57,6 +57,8 @@ class MainWindow(QMainWindow):
         self.model.select()
         self.table_view.setModel(self.model)
 
+        self.setHeaderNames()
+
         #ocultar campo ID Doctor de la tabla pacientes ----------
         id_doctor_column = self.model.fieldIndex("id_doctor")
         self.table_view.setColumnHidden(id_doctor_column, True)
@@ -221,3 +223,17 @@ class MainWindow(QMainWindow):
                 self.update_buttons()
                 return True
         return super().eventFilter(source, event) #pasar evenFilter al padre
+    
+    #funcion que permite mostrar los encabezados de la tabla como yo quiero
+    def setHeaderNames(self):
+        column_names = {
+            "id_paciente": "ID",
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "telefono": "Teléfono",
+            "email": "Correo Electrónico",
+            "fecha_nacimiento": "Fecha de Nacimiento",
+        }
+
+        for column, name in column_names.items():
+            self.model.setHeaderData(self.model.fieldIndex(column), Qt.Orientation.Horizontal, name)
