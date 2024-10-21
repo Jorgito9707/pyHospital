@@ -1,10 +1,18 @@
 from PyQt6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QPushButton, 
-    QTableView, QHeaderView, QMessageBox
+    QDialog, 
+    QVBoxLayout, 
+    QHBoxLayout, 
+    QPushButton, 
+    QTableView, 
+    QHeaderView, 
+    QMessageBox
 )
-from PyQt6.QtSql import QSqlTableModel, QSqlQuery
+
+from PyQt6.QtSql import QSqlQuery
 from PyQt6.QtCore import Qt
+
 from hospital.dialogWindows.Historias_Clinicas.crear_historia_clinica import CrearHistoriaClinica
+from hospital.model.model import MyModel
 
 class ConsultarHistoriaClinica(QDialog):
     """
@@ -16,7 +24,9 @@ class ConsultarHistoriaClinica(QDialog):
         super().__init__()
         self.paciente_id = paciente_id
         self.setWindowTitle("Consultar Historia Clínica")
-        self.model = QSqlTableModel()
+        self.resize(1280, 800)
+
+        self.model = MyModel()
         self.model.setTable("HISTORIAS_CLINICAS")
         self.selected_row = None
         self.setupUi()
@@ -28,17 +38,25 @@ class ConsultarHistoriaClinica(QDialog):
         # Crear la tabla
         self.tabla_historia = QTableView()
         self.tabla_historia.setModel(self.model)
+        layout.addWidget(self.tabla_historia)
+
         self.tabla_historia.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.tabla_historia.setSelectionMode(QTableView.SelectionMode.SingleSelection)
-        layout.addWidget(self.tabla_historia)
+        self.tabla_historia.verticalHeader().setVisible(False) 
+
+        #expandir columnas para llenar espacio disponible de la tabla -------------------------
+        self.tabla_historia.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
+        # habilitar edicion de la tabla por doble click o presionar la tecla enter ----------
+        self.tabla_historia.setEditTriggers(QTableView.EditTrigger.DoubleClicked | QTableView.EditTrigger.EditKeyPressed)
         
         # Botones
         button_layout = QHBoxLayout()
-        self.btn_crear = QPushButton("Crear Historia Clínica")
+        self.btn_crear = QPushButton("Crear Historia")
         self.btn_crear.clicked.connect(self.crear_historia_clinica)
         button_layout.addWidget(self.btn_crear)
         
-        self.btn_eliminar = QPushButton("Eliminar Historia Clínica")
+        self.btn_eliminar = QPushButton("Eliminar Historia")
         self.btn_eliminar.clicked.connect(self.delete_clinnical_record)
         button_layout.addWidget(self.btn_eliminar)
         

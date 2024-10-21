@@ -1,6 +1,9 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QMessageBox, QDialog
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLineEdit, QPushButton, QMessageBox, QDialog
+from PyQt6.QtGui import QIcon
 from PyQt6.QtSql import QSqlQuery
 from hospital.view import MainWindow
+
+import os
 
 class AutenticationWindow(QWidget):
     """
@@ -10,6 +13,8 @@ class AutenticationWindow(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.file_path = os.path.dirname(os.path.abspath(__file__)) #fichero padre
+
         self.setWindowTitle("Autenticación")
         self.resize(300, 200)
 
@@ -22,11 +27,26 @@ class AutenticationWindow(QWidget):
         self.name_field.setPlaceholderText("Nombre de usuario")
         layout.addWidget(self.name_field)
 
+        #contraseña y boton ocultar/mostrar ---
+        password_layout = QHBoxLayout()
+
         self.password_field = QLineEdit()
         self.password_field.setPlaceholderText("Contraseña")
         self.password_field.setEchoMode(QLineEdit.EchoMode.Password)
-        layout.addWidget(self.password_field)
+        password_layout.addWidget(self.password_field)
 
+        #boton mostrar ocultar contraseña -----
+        self.toggle_password_button = QPushButton()
+        #self.toggle_password_button.setFixedSize(30, 30)
+        self.toggle_password_button.clicked.connect(self.toggle_password_visibility)
+        icon_path = os.path.join(self.file_path, '.', 'images', 'ojo_abierto.png')
+        self.toggle_password_button.setIcon(QIcon(icon_path))
+
+        password_layout.addWidget(self.toggle_password_button)
+
+        layout.addLayout(password_layout)
+
+        #boton para iniciar sesión ---
         login_button = QPushButton("Iniciar sesión")
         login_button.clicked.connect(self.autenticar)
         layout.addWidget(login_button)
@@ -58,10 +78,16 @@ class AutenticationWindow(QWidget):
         else:
             QMessageBox.warning(self, "Error", "Credenciales incorrectas")
 
+    #meotodo para mostrar/ocultar la contraseña al presionar el botón
     def toggle_password_visibility(self):
         if self.password_field.echoMode() == QLineEdit.EchoMode.Password:
+            icon_path = os.path.join(self.file_path, '.', 'images', 'ojo_cerrado.png')
+            self.toggle_password_button.setIcon(QIcon(icon_path))
+
             self.password_field.setEchoMode(QLineEdit.EchoMode.Normal)
         else:
+            icon_path = os.path.join(self.file_path, '.', 'images', 'ojo_abierto.png')
+            self.toggle_password_button.setIcon(QIcon(icon_path))
             self.password_field.setEchoMode(QLineEdit.EchoMode.Password)
     
     def apply_styles(self):
@@ -69,10 +95,14 @@ class AutenticationWindow(QWidget):
             QWidget {
                 font-size: 14px;
             }
+                           
             QLineEdit {
                 padding: 5px;
                 margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
             }
+                           
             QPushButton {
                 padding: 8px;
                 background-color: #4CAF50;
@@ -80,7 +110,20 @@ class AutenticationWindow(QWidget):
                 border: none;
                 border-radius: 4px;
             }
+                           
             QPushButton:hover {
                 background-color: #45a049;
             }
+                           
+            #toggle_password_button {
+                background-color: #4CAF50;
+                border: 1px solid #000;
+                border-radius: 4px;
+                margin-left: 5px;
+            }
+                           
+            #toggle_password_button:hover {
+            b   ackground-color: #e0e0e0;
+            }
         """)
+        self.toggle_password_button.setObjectName("toggle_password_button")

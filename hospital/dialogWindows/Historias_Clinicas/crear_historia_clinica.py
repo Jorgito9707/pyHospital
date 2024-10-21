@@ -1,4 +1,18 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QPushButton, QDateEdit, QFormLayout, QDialogButtonBox, QMessageBox, QTextEdit, QTabWidget, QWidget
+from PyQt6.QtWidgets import (
+    QDialog, 
+    QVBoxLayout, 
+    QLineEdit, 
+    QPushButton, 
+    QDateEdit, 
+    QFormLayout, 
+    QDialogButtonBox, 
+    QMessageBox, 
+    QTextEdit, 
+    QTabWidget, 
+    QWidget
+)
+
+from PyQt6.QtCore import QDate
 from PyQt6.QtSql import QSqlQuery
 
 class CrearHistoriaClinica(QDialog):
@@ -11,6 +25,8 @@ class CrearHistoriaClinica(QDialog):
         super().__init__()
         self.id_paciente = id_paciente
         self.setWindowTitle("Crear Historia Clínica")
+        self.resize(750, 600)
+
         self.setupUi()
     
     def setupUi(self):
@@ -20,20 +36,22 @@ class CrearHistoriaClinica(QDialog):
         self.tab_widget = QTabWidget()
         
         # Pestaña de Motivo de Consulta
-        tab1 = QWidget()
-        tab1_layout = QVBoxLayout()
+        motivo_consulta_tab = QWidget()
+        motivo_consulta_layout = QVBoxLayout()
         self.descriptionField = QTextEdit()
-        tab1_layout.addWidget(self.descriptionField)
-        tab1.setLayout(tab1_layout)
-        self.tab_widget.addTab(tab1, "Motivo de Consulta")
+        motivo_consulta_layout.addWidget(self.descriptionField)
+        motivo_consulta_tab.setLayout(motivo_consulta_layout)
+        self.tab_widget.addTab(motivo_consulta_tab, "Motivo de Consulta")
         
         # Pestaña de Fecha de Consulta
-        tab2 = QWidget()
-        tab2_layout = QVBoxLayout()
+        date_tab = QWidget()
+        date_layout = QVBoxLayout()
         self.fechaConsultaField = QDateEdit()
-        tab2_layout.addWidget(self.fechaConsultaField)
-        tab2.setLayout(tab2_layout)
-        self.tab_widget.addTab(tab2, "Fecha de Consulta")
+        self.fechaConsultaField.setCalendarPopup(True)
+        self.fechaConsultaField.setDate(QDate.currentDate()) #fecha actual por defecto
+        date_layout.addWidget(self.fechaConsultaField)
+        date_tab.setLayout(date_layout)
+        self.tab_widget.addTab(date_tab, "Fecha de Consulta")
         
         # Pestaña de Historia Familiar
         tab3 = QWidget()

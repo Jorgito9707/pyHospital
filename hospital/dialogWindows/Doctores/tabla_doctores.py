@@ -48,6 +48,7 @@ class TablaDoctores(QDialog):
         #establecer comportamiento al seleccionar elementos ---------------------------------
         self.tabla_doctores.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.tabla_doctores.setSelectionMode(QTableView.SelectionMode.SingleSelection)
+        self.tabla_doctores.verticalHeader().setVisible(False)
         
         # Botones
         button_layout = QHBoxLayout()

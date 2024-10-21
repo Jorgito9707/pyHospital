@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QLineEdit, QDialog, QFormLayout, QDialogButtonBox, QMessageBox
+from PyQt6.QtWidgets import QLineEdit, QDialog, QFormLayout, QDialogButtonBox, QMessageBox, QSpacerItem, QSizePolicy
 from PyQt6.QtCore import Qt
 from PyQt6.QtSql import QSqlQuery
 
@@ -18,6 +18,10 @@ class CambiarContraseña(QDialog):
         self.new_password.setEchoMode(QLineEdit.EchoMode.Password)
 
         layout.addRow("Nueva contraseña:", self.new_password)
+
+        #agregar un spacer para separar los botones del resto de formulario
+        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        layout.addItem(spacer)
 
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel,
@@ -39,6 +43,7 @@ class CambiarContraseña(QDialog):
         else:
             QMessageBox.warning(self, "Error", "Por favor, ingrese una nueva contraseña.")
 
+    #modificar contraseña en la base de datos
     def update_password(self, new_password):
         query = QSqlQuery()
         query.prepare("UPDATE DOCTORES SET password=? WHERE id_doctor=?")

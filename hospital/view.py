@@ -72,6 +72,7 @@ class MainWindow(QMainWindow):
         #establecer comportamiento al seleccionar elementos ---------------------------------
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.table_view.setSelectionMode(QTableView.SelectionMode.SingleSelection)
+        self.table_view.verticalHeader().setVisible(False)
         
         left_layout.addWidget(self.table_view)
 

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QPushButton, QDateEdit, QFormLayout, QDialogButtonBox, QMessageBox
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QPushButton, QDateEdit, QFormLayout, QDialogButtonBox, QMessageBox, QSpacerItem, QSizePolicy
 from PyQt6.QtSql import QSqlQuery
 
 class AgregarPacientes(QDialog):
@@ -30,9 +30,14 @@ class AgregarPacientes(QDialog):
         form_layout.addRow("Email:", self.emailField)
 
         self.dateField = QDateEdit()
+        self.dateField.setCalendarPopup(True)
         form_layout.addRow("Fecha de Nacimiento:", self.dateField)
 
         layout.addLayout(form_layout)
+
+        #agregar un spacer para separar los botones del resto de formulario
+        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        layout.addItem(spacer)
 
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         button_box.accepted.connect(self.accept)

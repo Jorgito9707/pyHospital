@@ -1,4 +1,16 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QComboBox, QFormLayout
+from PyQt6.QtWidgets import (
+    QDialog, 
+    QVBoxLayout, 
+    QHBoxLayout, 
+    QLineEdit, 
+    QPushButton, 
+    QMessageBox, 
+    QComboBox,
+    QFormLayout,
+    QSpacerItem,
+    QSizePolicy
+)
+
 from PyQt6.QtSql import QSqlQuery
 from PyQt6.QtCore import Qt
 
@@ -30,6 +42,10 @@ class AgregarDoctores(QDialog):
         form_layout.addRow("Administrador: ", self.admin_input)
         
         layout.addLayout(form_layout)
+
+        #agregar un spacer para separar los botones del resto de formulario
+        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        layout.addItem(spacer)
 
         # Botones
         button_layout = QHBoxLayout()
