@@ -125,9 +125,69 @@ class ConsultarPacientesHistoria(QDialog):
 
     #filtrar pacientes según criterios seleccionados por el usuario 
     def open_filter_dialog(self):
-        dialog = FiltroPacientes(self.doctor_id)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            filters = dialog.get_filters()
-            dialog.build_query(filters)
-            # Actualizar la tabla con los resultados del filtro
-            self.actualizar_tabla()
+        dialog = FiltroPacientes()
+        dialog.filterApplied.connect(self.apply_filters) #aplicar filtros que fueron definidos en la ventana de dialogo de filtros 
+        dialog.exec()
+    
+    def apply_filters(self, filters):
+        query = QSqlQuery()
+        query_str = """
+            SELECT PACIENTES.id_paciente, PACIENTES.nombre, PACIENTES.apellido, 
+                PACIENTES.telefono, PACIENTES.email, PACIENTES.fecha_nacimiento,
+                HISTORIAS_CLINICAS.id_historia_clinica, HISTORIAS_CLINICAS.motivo_consulta, 
+                HISTORIAS_CLINICAS.fecha_consulta, HISTORIAS_CLINICAS.historia_familiar,
+                HISTORIAS_CLINICAS.alergias, HISTORIAS_CLINICAS.diagnostico, 
+                HISTORIAS_CLINICAS.tratamiento, HISTORIAS_CLINICAS.evolucion_clinica,
+                DOCTORES.nombre AS nombre_doctor, DOCTORES.apellido AS apellido_doctor
+
+            FROM PACIENTES
+
+            LEFT JOIN HISTORIAS_CLINICAS ON PACIENTES.id_paciente = HISTORIAS_CLINICAS.id_paciente
+            LEFT JOIN DOCTORES ON PACIENTES.id_doctor = DOCTORES.id_doctor
+
+            WHERE PACIENTES.id_doctor = :doctor_id
+        """
+        
+        conditions = []
+        #ciclo para crear sentencias sql con cada filtro aplicado
+        for key, value in filters.items():
+            if value:
+                if key == 'id_paciente':
+                    conditions.append(f"PACIENTES.{key} = :{key}")
+                else:
+                    conditions.append(f"PACIENTES.{key} LIKE :{key}")
+        
+        #crear sentencia general para filtros
+        if conditions:
+            query_str += " AND " + " AND ".join(conditions)
+        
+        query.prepare(query_str)
+        query.bindValue(":doctor_id", self.doctor_id)
+        
+        #ciclo para agregar con bindValue cada dato aplicado para filtrar
+        for key, value in filters.items():
+            if value:
+                if key == 'id_paciente':
+                    query.bindValue(f":{key}", value)
+                else:
+                    query.bindValue(f":{key}", f"%{value}%")
+        
+        if not query.exec():
+            QMessageBox.critical(self, "Error", f"Error al aplicar los filtros {query.lastError().text()}")
+            print("Error en la consulta:", query.lastError().text())
+            return
+
+        self.model.setQuery(query)
+
+        column_names = {
+            0: "ID Paciente", 1: "Nombre", 2: "Apellido", 3: "Teléfono", 4: "Email", 5: "Fecha Nacimiento",
+            6: "ID Historia", 7: "Motivo Consulta", 8: "Fecha Consulta", 9: "Historia Familiar",
+            10: "Alergias", 11: "Diagnóstico", 12: "Tratamiento", 13: "Evolución Clínica",
+            14: "Nombre Doctor", 15: "Apellido Doctor"
+        }
+        
+        for i, name in column_names.items():
+            self.model.setHeaderData(i, Qt.Orientation.Horizontal, name)
+
+        self.tabla_consulta.reset()
+        self.tabla_consulta.resizeColumnsToContents()
